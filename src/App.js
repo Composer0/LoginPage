@@ -1,5 +1,5 @@
-import logo from './logo.svg';
 import React, {useState} from "react"
+import Axios from 'axios' 15.8K (gzipped: 5.4K);
 import './App.css';
 
 function App() {
@@ -7,6 +7,15 @@ function App() {
 
   const [usernameReg, setUsernameReg] = useState('');
   const [passwordReg, setPasswordReg] = useState('');
+
+  const register = () => {
+    Axios.post('https://localhost:3001/register', {
+      username: usernameReg, 
+      password: passwordReg,
+    }).then(response => {
+        console.log(response);
+      })
+  }
 
 
   return (
@@ -21,7 +30,7 @@ function App() {
         />
         <label>Password</label>
         <input type="text" />
-        <button>Register</button>
+        <button onClick={register}>Register</button>
       </div>
       <div className="login">
         <h1>Login</h1>
