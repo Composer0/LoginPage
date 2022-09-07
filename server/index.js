@@ -1,34 +1,47 @@
-const express = require("express");
-
+const express = require('express');
 const app = express();
 
-app.use(express.json());
+const mysql = require('mysql2')
 
-const {createPool} = require('mysql2');
+const db = mysql.createConnection({
+    user: 'Composer0',
+    host: 'localhost',
+    port: '4274',
+    password: 'Desp0liation-S0ng',
+    database: 'loginsystem'
+})
 
-const pool = createPool ({
-    host: "127.0.0.1",
-    port: "4274",
-    user: "Composer0",
-    password: "Desp0liation-S0ng",
-    connectionLimit: 10
-});
 
-pool.query(`select * from loginsystem.user`, (err, res)=>{
-    return console.log(res)
-});
+app.get("/select", (req, res) => {
 
-app.post('/register', (req,res)=> {
+    db.query(
+        'SELECT * FROM user', (err, result) => {
+        if (err) {
+            
+            console.log(err)
+        }
+        res.send(result)
+    })
+})
 
-    const username = req.body.username
-    const password = req.body.password
 
-    db.query("INSERT INTO user (username, password) VALUES (?,?)", [username, password], (err, result) => {
-        console.log(err);
-    }
-    );
+app.post('/insert', (req, res) => {
+
+    const userName = "Cool"
+    const passWord = "Yay"
+    const id = 8
+
+
+    db.query(
+        'INSERT INTO user (id, username, password) VALUES (?, ?, ?)', [id, userName, passWord], (err, result) => {
+        if (err) {
+            
+            console.log(err)
+        }
+        res.send(result)
+    })
 })
 
 app.listen(3001, () => {
-    console.log("running server");
-})
+    console.log('yo! your server runnin')
+});
