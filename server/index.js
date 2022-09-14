@@ -1,45 +1,68 @@
 const express = require('express');
 const app = express();
+const cors = require("cors");
 
 const mysql = require('mysql2')
+
+app.use(express.json());
+app.use(cors());
+
 
 const db = mysql.createConnection({
     user: 'Composer0',
     host: 'localhost',
     port: '4274',
     password: 'Desp0liation-S0ng',
-    database: 'loginsystem'
+    database: 'userdatabase'
 })
 
 
-app.get("/select", (req, res) => {
+// app.get("/select", (req, res) => {
+
+//     db.query(
+//         'SELECT * FROM user', (err, result) => {
+//         if (err) {
+            
+//             console.log(err)
+//         }
+//         res.send(result)
+//     })
+// })
+
+
+app.post('/register', (req, res) => {
+
+    const userName = req.body.username
+    const passWord = req.body.password
+    // const id = 9
+
 
     db.query(
-        'SELECT * FROM user', (err, result) => {
-        if (err) {
-            
+        'INSERT INTO users (username, password) VALUES (?, ?)', [userName, passWord], (err, result) => {
             console.log(err)
         }
-        res.send(result)
-    })
+    )
 })
 
-
-app.post('/insert', (req, res) => {
-
-    const userName = "Cool"
-    const passWord = "Yay"
-    const id = 8
-
+app.post('/login', (req,res) => {
+    const username = req.body.username;
+    const password = req.body.password;
 
     db.query(
-        'INSERT INTO user (id, username, password) VALUES (?, ?, ?)', [id, userName, passWord], (err, result) => {
-        if (err) {
-            
-            console.log(err)
-        }
-        res.send(result)
-    })
+        "SELECT * FROM users WHERE username = ? AND password = ?", 
+            [username, password],
+            (err, result) => {
+                if(err) {
+                    res.send({err: err});
+                }  
+                
+                if (result.length > 0) {
+                        res.send(result)
+                    } else {
+                        res.send({message: "Wrong username/password combination."});
+                    }
+                } 
+    )
 })
 
 app.listen(3001, () => {
